@@ -1,15 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 from scipy.interpolate import interp1d
 import PyMieScatt as ps
 
-
 #load-dieltric-data
-
-location = r"[your location]"
-
-au_file = location + r"\Permittivity_Gold_JohnsonChristy.txt"
-ag_file = location + r"\Permittivity_Silver_JohnsonChristy.txt"
+au_file = r"your-location\Permittivity_Gold_JohnsonChristy.txt"
+ag_file = r"your-location\Permittivity_Gold_JohnsonChristy.txt"
 
 au_data = np.loadtxt(au_file)
 ag_data = np.loadtxt(ag_file)
@@ -17,28 +14,21 @@ ag_data = np.loadtxt(ag_file)
 #File-format:
 #Energy(eV)   eps1   eps2
 
-au_data = np.loadtxt(au_file)
-ag_data = np.loadtxt(ag_file)
-
 #Au-data
-
 energy_au = au_data[:,0]
 eps1_au  = au_data[:,1]
 eps2_au  = au_data[:,2]
 
 #Ag-data
-
 energy_ag = ag_data[:,0]
 eps1_ag  = ag_data[:,1]
 eps2_ag  = ag_data[:,2]
 
 #Energy-to-Wavelength
-
 wavelength_au = 1240 / energy_au
 wavelength_ag = 1240 / energy_ag
 
 #Sorting
-
 idx_au = np.argsort(wavelength_au)
 idx_ag = np.argsort(wavelength_ag)
 
@@ -52,8 +42,6 @@ eps2_ag = eps2_ag[idx_ag]
 
 
 #Wavelenght range
-
-
 wavelength = np.linspace(
     350,
     750,
@@ -62,7 +50,6 @@ wavelength = np.linspace(
 
 
 #Interpolation
-
 eps1_au_interp = interp1d(
     wavelength_au,
     eps1_au,
@@ -93,7 +80,6 @@ eps2_ag_interp = interp1d(
 
 
 #complex-refractive-index
-
 m_au = np.sqrt(
     eps1_au_interp
     +
@@ -107,7 +93,6 @@ m_ag = np.sqrt(
 )
 
 #Core-size
-
 core_radius = 28
 
 shell_thicknesses = (
@@ -115,7 +100,6 @@ shell_thicknesses = (
 )
 
 #Peak-data
-
 peak_wavelengths = []
 peak_shells = []
 
@@ -137,7 +121,6 @@ for idx, shell in enumerate(shell_thicknesses):
     extinction = []
 
     #Loop-wavelength
-
     for i in range(len(wavelength)):
 
         result = ps.MieQCoreShell(
@@ -158,7 +141,6 @@ for idx, shell in enumerate(shell_thicknesses):
     extinction = np.array(extinction)
 
     #Peak-detector
-
     peak_idx = np.argmax(extinction)
 
     peak_wavelength = wavelength[peak_idx]
@@ -169,7 +151,6 @@ for idx, shell in enumerate(shell_thicknesses):
     peak_wavelengths.append(peak_wavelength)
 
     #Plot-spectrum
-
     ax.plot(
         wavelength,
         extinction,
@@ -179,7 +160,6 @@ for idx, shell in enumerate(shell_thicknesses):
     )
 
 #Graph setting
-
 ax.set_xlabel("Wavelength (nm)")
 ax.set_ylabel(r"Extinction Cross Section (nm$^2$)")
 
@@ -203,7 +183,6 @@ ax.legend(
 )
 
 #Peak tren
-
 fig2, ax2 = plt.subplots(figsize=(6,5))
 
 ax2.plot(
